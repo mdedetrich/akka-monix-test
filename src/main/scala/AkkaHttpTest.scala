@@ -4,7 +4,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import com.typesafe.scalalogging.StrictLogging
 import monix.eval.Task
 import monix.execution.Scheduler
@@ -20,9 +20,9 @@ import scala.util.{Random, Try}
 object AkkaHttpTest extends App with StrictLogging {
   MonixMDCAdapter.initialize()
   implicit val actorSystem: ActorSystem        = ActorSystem()
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val materializer: Materializer      = Materializer(actorSystem)
   implicit val scheduler: Scheduler            = Scheduler.traced
-  implicit val opts: Task.Options              = Task.defaultOptions.enableLocalContextPropagation.disableLocalContextIsolateOnRun
+  implicit val opts: Task.Options              = Task.defaultOptions.enableLocalContextPropagation
 
   val addResponseHeader: Directive0 =
     mapInnerRoute(_.andThen(_.flatMap {
